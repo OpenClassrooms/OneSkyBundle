@@ -27,7 +27,6 @@ class OpenClassroomsOneSkyExtension extends Extension
     {
         $container->setParameter('openclassrooms_onesky.api_key', $config['api_key']);
         $container->setParameter('openclassrooms_onesky.api_secret', $config['api_secret']);
-        $container->setParameter('openclassrooms_onesky.project_id', $config['project_id']);
         $container->setParameter('openclassrooms_onesky.source_locale', $config['source_locale']);
         $container->setParameter('openclassrooms_onesky.locales', $config['locales']);
         $container->setParameter('openclassrooms_onesky.file_format', $config['file_format']);

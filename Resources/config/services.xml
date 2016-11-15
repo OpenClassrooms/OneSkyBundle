@@ -24,9 +24,6 @@
             <call method="setLanguageFactory">
                 <argument type="service" id="openclassrooms.onesky.model.language_factory"/>
             </call>
-            <call method="setProjectId">
-                <argument type="string">%openclassrooms_onesky.project_id%</argument>
-            </call>
         </service>
         <service id="openclassrooms.onesky.model.file_factory" class="OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\FileFactoryImpl">
             <call method="setKeepingAllStrings">
@@ -37,9 +34,6 @@
             </call>
             <call method="setKernelRootDir">
                 <argument type="string">%kernel.root_dir%</argument>
-            </call>
-            <call method="setProjectId">
-                <argument type="string">%openclassrooms_onesky.project_id%</argument>
             </call>
             <call method="setSourceLocale">
                 <argument type="string">%openclassrooms_onesky.source_locale%</argument>

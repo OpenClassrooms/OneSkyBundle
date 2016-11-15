@@ -49,7 +49,7 @@ abstract class Command extends ContainerAwareCommand
         $dispatcher->addListener(
             TranslationPrePullEvent::getEventName(),
             function (TranslationPrePullEvent $event) use ($output) {
-                $output->writeln('<info>Pulling for project id '.$this->getProjectId()."</info>\n");
+                $output->writeln("<info>Pulling files </info>\n");
                 $this->progressBar = new ProgressBar($output, $event->getExportFilesCount());
                 $this->progressBar->setFormat(PROGRESS_BAR_FORMAT);
                 $this->getProgressBar()->start();
@@ -88,14 +88,6 @@ abstract class Command extends ContainerAwareCommand
     }
 
     /**
-     * @return string
-     */
-    private function getProjectId()
-    {
-        return $this->getContainer()->getParameter('openclassrooms_onesky.project_id');
-    }
-
-    /**
      * @return ProgressBar
      */
     private function getProgressBar()
@@ -109,7 +101,7 @@ abstract class Command extends ContainerAwareCommand
         $dispatcher->addListener(
             TranslationPrePushEvent::getEventName(),
             function (TranslationPrePushEvent $event) use ($output) {
-                $output->writeln('<info>Pushing for project id '.$this->getProjectId()."</info>\n");
+                $output->writeln("<info>Pushing files </info>\n");
                 $this->progressBar = new ProgressBar($output, $event->getUploadFilesCount());
                 $this->progressBar->setFormat(PROGRESS_BAR_FORMAT);
                 $this->getProgressBar()->start();

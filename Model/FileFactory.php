@@ -10,10 +10,10 @@ interface FileFactory
     /**
      * @return ExportFile
      */
-    public function createExportFile($sourceFilePath, $requestedLocale);
+    public function createExportFile($sourceFilePath, $projectId, $requestedLocale);
 
     /**
      * @return UploadFile
      */
-    public function createUploadFile($filePath, $locale = null);
+    public function createUploadFile($filePath, $projectId, $locale = null);
 }

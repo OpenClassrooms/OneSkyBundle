@@ -24,11 +24,6 @@ trait CommandTestCase
     public static $locales = ['fr'];
 
     /**
-     * @var int
-     */
-    public static $projectId = 1;
-
-    /**
      * @return ContainerInterface
      */
     protected function getContainer()
@@ -37,9 +32,8 @@ trait CommandTestCase
 
         return new ContainerForTest(
             [
-                'openclassrooms_onesky.file_paths' => [self::$filePaths],
+                'openclassrooms_onesky.file_paths' => [ 1 => [self::$filePaths]],
                 'openclassrooms_onesky.requestedLocales' => self::$locales,
-                'openclassrooms_onesky.project_id' => self::$projectId,
                 'kernel.root_dir' => __DIR__.'/../',
             ],
             [

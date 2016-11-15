@@ -71,9 +71,11 @@ class TranslationServiceImpl implements TranslationService
     {
         $exportFiles = [];
         /** @var SplFileInfo $file */
-        foreach ($this->getFiles($filePaths, $this->getSourceLocales()) as $file) {
-            foreach ($this->getRequestedLocales($locales) as $locale) {
-                $exportFiles[] = $this->fileFactory->createExportFile($file->getRealPath(), $locale);
+        foreach ($this->getFilePaths($filePaths) as $projectId => &$paths) {
+            foreach ($this->getFiles($paths, $this->getSourceLocales()) as $file) {
+                foreach ($this->getRequestedLocales($locales) as $locale) {
+                    $exportFiles[] = $this->fileFactory->createExportFile($file->getRealPath(), $projectId, $locale);
+                }
             }
         }
 
@@ -95,11 +97,11 @@ class TranslationServiceImpl implements TranslationService
     /**
      * @return Finder
      */
-    private function getFiles(array $filePaths, array $locales)
+    private function getFiles(array $paths, array $locales)
     {
         return Finder::create()
             ->files()
-            ->in($this->getFilePaths($filePaths))
+            ->in($paths)
             ->name('*.{'.implode(',', $locales).'}.'.$this->fileFormat);
     }
 
@@ -135,8 +137,10 @@ class TranslationServiceImpl implements TranslationService
         $uploadFiles = [];
         /* @var SplFileInfo $file */
         foreach ($this->getSourceLocales($locales) as $locale) {
-            foreach ($this->getFiles($filePaths, [$locale]) as $file) {
-                $uploadFiles[] = $this->fileFactory->createUploadFile($file->getRealPath(), $locale);
+            foreach ($filePaths as $projectId => &$paths) {
+                foreach ($this->getFiles($paths, [$locale]) as $file) {
+                    $uploadFiles[] = $this->fileFactory->createUploadFile($file->getRealPath(), $projectId, $locale);
+                }
             }
         }
 

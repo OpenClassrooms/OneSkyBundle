@@ -1,11 +1,13 @@
 openclassrooms_onesky:
     api_key: api_key
     api_secret: api_secret
-    project_id: 1
     file_format: yml
     source_locale: en
     locales:
         - fr
         - es
     file_paths:
-        - /
+        1:
+            - /1/
+        2:
+            - /2/

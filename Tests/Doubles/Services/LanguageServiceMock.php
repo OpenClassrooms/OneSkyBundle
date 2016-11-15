@@ -35,11 +35,14 @@ class LanguageServiceMock implements LanguageService
     /**
      * {@inheritdoc}
      */
-    public function getLanguages(array $locales = [])
+    public function getLanguages($projectId, array $locales = [])
     {
         self::$calledGetLanguages = true;
-        self::$locales = $locales;
+        self::$locales[$projectId] = $locales;
 
-        return self::$languages;
+        if(isset(self::$languages[$projectId]))
+            return self::$languages[$projectId];
+        else
+            return array();
     }
 }

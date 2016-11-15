@@ -10,5 +10,5 @@ interface LanguageService
     /**
      * @return \OpenClassrooms\Bundle\OneSkyBundle\Model\Language[]
      */
-    public function getLanguages(array $locales = []);
+    public function getLanguages($projectId, array $locales = []);
 }

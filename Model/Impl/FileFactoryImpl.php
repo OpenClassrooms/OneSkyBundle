@@ -21,11 +21,6 @@ class FileFactoryImpl implements FileFactory
     private $kernelRootDir;
 
     /**
-     * @var int
-     */
-    private $projectId;
-
-    /**
      * @var string
      */
     private $sourceLocale;
@@ -38,9 +33,9 @@ class FileFactoryImpl implements FileFactory
     /**
      * @return ExportFile
      */
-    public function createExportFile($sourceFilePath, $requestedLocale)
+    public function createExportFile($sourceFilePath, $projectId, $requestedLocale)
     {
-        return new ExportFileImpl($this->projectId, $sourceFilePath, $this->getProjectDirectory(), $requestedLocale);
+        return new ExportFileImpl($projectId, $sourceFilePath, $this->getProjectDirectory(), $requestedLocale);
     }
 
     /**
@@ -54,10 +49,10 @@ class FileFactoryImpl implements FileFactory
     /**
      * {@inheritdoc}
      */
-    public function createUploadFile($filePath, $locale = null)
+    public function createUploadFile($filePath, $projectId, $locale = null)
     {
         $file =  new UploadFileImpl(
-            $this->projectId,
+            $projectId,
             $filePath,
             $this->getProjectDirectory(),
             $this->fileFormat,
@@ -82,11 +77,6 @@ class FileFactoryImpl implements FileFactory
     public function setKernelRootDir($kernelRootDir)
     {
         $this->kernelRootDir = $kernelRootDir;
-    }
-
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
     }
 
     public function setSourceLocale($sourceLocale)

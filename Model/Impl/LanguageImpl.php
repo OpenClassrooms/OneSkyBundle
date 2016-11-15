@@ -9,9 +9,10 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\Language;
  */
 class LanguageImpl extends Language
 {
-    public function __construct(array $data)
+    public function __construct(array $data, $projectId)
     {
         $this->locale = $data['locale'];
         $this->translationProgress = $data['translation_progress'];
+        $this->projectId = $projectId;
     }
 }

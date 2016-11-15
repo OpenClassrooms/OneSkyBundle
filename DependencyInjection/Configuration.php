@@ -20,11 +20,10 @@ class Configuration implements ConfigurationInterface
         $rootNode->children()
             ->scalarNode('api_key')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('api_secret')->isRequired()->cannotBeEmpty()->end()
-            ->scalarNode('project_id')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('file_format')->cannotBeEmpty()->defaultValue('xliff')->end()
             ->scalarNode('source_locale')->cannotBeEmpty()->defaultValue('en')->end()
             ->arrayNode('locales')->isRequired()->cannotBeEmpty()->prototype('scalar')->end()->end()
-            ->arrayNode('file_paths')->isRequired()->cannotBeEmpty()->prototype('scalar')->end()->end()
+            ->arrayNode('file_paths')->isRequired()->cannotBeEmpty()->prototype('array')->prototype('scalar')->end()->end()->end()
             ->scalarNode('keep_all_strings')->cannotBeEmpty()->defaultValue(true)->end()
             ->end();
 

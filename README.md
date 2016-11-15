@@ -38,14 +38,14 @@ $bundles = array(
 openclassrooms_onesky:
     api_key:  %onesky.api_key%
     api_secret: %onesky.api_secret%
-    project_id: %onesky.project_id%
     source_locale: %source_locale% #optional, default en
     locales:
       - fr
       - es
     file_format: %onesky.file_format% #optional, default xliff
     file_paths:
-      - %path.to.translations.files.directory%
+        %onesky.project_id%:
+                - %path.to.translations.files.directory%
     keep_all_strings: false # default true
     
 ```

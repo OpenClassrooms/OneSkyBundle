@@ -18,12 +18,14 @@ class LanguageServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     private $service;
 
+    const PROJECT_ID = 1;
+
     /**
      * @test
      */
     public function WithoutLocales_getLanguage()
     {
-        $languages = $this->service->getLanguages();
+        $languages = $this->service->getLanguages(self::PROJECT_ID);
         $this->assertEquals([new LanguageStub2()], $languages);
     }
 
@@ -32,7 +34,7 @@ class LanguageServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     public function getLanguage()
     {
-        $languages = $this->service->getLanguages([LanguageStub1::LOCALE, LanguageStub2::LOCALE]);
+        $languages = $this->service->getLanguages(self::PROJECT_ID, [LanguageStub1::LOCALE, LanguageStub2::LOCALE]);
         $this->assertEquals([new LanguageStub1(), new LanguageStub2()], $languages);
     }
 
