@@ -11,24 +11,27 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\UploadFile;
 interface TranslationService
 {
     /**
+     * @param integer $projectId
      * @param string[] $filePaths
      * @param string[] $locales
      *
      * @return ExportFile[] $files
      */
-    public function pull(array $filePaths, array $locales = []);
+    public function pull($projectId, array $filePaths, array $locales = []);
 
     /**
+     * @param integer $projectId
      * @param string[] $filePaths
      *
      * @return UploadFile[] $files
      */
-    public function push(array $filePaths, array $locales = []);
+    public function push($projectId, array $filePaths, array $locales = []);
 
     /**
+     * @param integer $projectId
      * @param string[] $filePaths
      *
      * @return [ExportFile[], UploadFile[]] $files
      */
-    public function update(array $filePaths, array $locales = []);
+    public function update($projectId, array $filePaths, array $locales = []);
 }

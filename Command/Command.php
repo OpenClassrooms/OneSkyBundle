@@ -73,11 +73,11 @@ abstract class Command extends ContainerAwareCommand
                 $output->writeln('<info>'.count($event->getDownloadedFiles()).' files downloaded. </info>');
                 $table = new Table($output);
                 $table
-                    ->setHeaders(['File', 'Locale'])
+                    ->setHeaders(['Project', 'File', 'Locale'])
                     ->setRows(
                         array_map(
                             function (ExportFile $file) {
-                                return [$file->getSourceFilePathRelativeToProject(), $file->getRequestedLocale()];
+                                return [$file->getProjectId(), $file->getSourceFilePathRelativeToProject(), $file->getRequestedLocale()];
                             },
                             $event->getDownloadedFiles()
                         )
@@ -124,11 +124,11 @@ abstract class Command extends ContainerAwareCommand
                 $output->writeln('<info>'.count($event->getUploadedFiles()).' files downloaded. </info>');
                 $table = new Table($output);
                 $table
-                    ->setHeaders(['File', 'Locale'])
+                    ->setHeaders(['Project', 'File', 'Locale'])
                     ->setRows(
                         array_map(
                             function (UploadFile $file) {
-                                return [$file->getSourceFilePathRelativeToProject(), $file->getSourceLocale()];
+                                return [$file->getProjectId(), $file->getSourceFilePathRelativeToProject(), $file->getSourceLocale()];
                             },
                             $event->getUploadedFiles()
                         )

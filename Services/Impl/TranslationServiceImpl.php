@@ -57,21 +57,21 @@ class TranslationServiceImpl implements TranslationService
     /**
      * {@inheritdoc}
      */
-    public function update(array $filePaths = [], array $locales = [])
+    public function update($projectId, array $filePaths = [], array $locales = [])
     {
         $this->eventDispatcher->dispatch(TranslationUpdateEvent::getEventName(), new TranslationUpdateEvent());
 
-        return [$this->pull($filePaths, $locales), $this->push($filePaths)];
+        return [$this->pull($projectId, $filePaths, $locales), $this->push($projectId, $filePaths)];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function pull(array $filePaths, array $locales = [])
+    public function pull($projectId, array $filePaths, array $locales = [])
     {
         $exportFiles = [];
         /** @var SplFileInfo $file */
-        foreach ($this->getFilePaths($filePaths) as $projectId => &$paths) {
+        foreach ($this->getFilePaths($filePaths, $projectId) as $projectId => &$paths) {
             foreach ($this->getFiles($paths, $this->getSourceLocales()) as $file) {
                 foreach ($this->getRequestedLocales($locales) as $locale) {
                     $exportFiles[] = $this->fileFactory->createExportFile($file->getRealPath(), $projectId, $locale);
@@ -108,9 +108,18 @@ class TranslationServiceImpl implements TranslationService
     /**
      * @return string[]
      */
-    private function getFilePaths(array $filePaths)
+    private function getFilePaths(array $filePaths, $projectId)
     {
-        return empty($filePaths) ? $this->filePaths : $filePaths;
+        if(empty($filePaths)) {
+            if($projectId && isset($this->filePaths[$projectId]))
+                return array($projectId => $this->filePaths[$projectId]);
+            else
+                return $this->filePaths;
+        }
+        elseif ($projectId)
+            return array($projectId => $filePaths);
+        else
+            return $this->filePaths;
     }
 
     /**
@@ -132,12 +141,13 @@ class TranslationServiceImpl implements TranslationService
     /**
      * {@inheritdoc}
      */
-    public function push(array $filePaths, array $locales = [])
+    public function push($projectId, array $filePaths, array $locales = [])
     {
+
         $uploadFiles = [];
         /* @var SplFileInfo $file */
         foreach ($this->getSourceLocales($locales) as $locale) {
-            foreach ($filePaths as $projectId => &$paths) {
+            foreach ($this->getFilePaths($filePaths, $projectId) as $projectId => &$paths) {
                 foreach ($this->getFiles($paths, [$locale]) as $file) {
                     $uploadFiles[] = $this->fileFactory->createUploadFile($file->getRealPath(), $projectId, $locale);
                 }

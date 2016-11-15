@@ -49,17 +49,19 @@ class CheckTranslationProgressCommand extends ContainerAwareCommand
         $projectsIds = array_keys($this->getContainer()->getParameter('openclassrooms_onesky.file_paths'));
         $output->writeln('<info>Check translations progress</info>');
         $languages = [];
-        foreach ($projectsIds as $projectId)
-        $languages += $this->getContainer()
-            ->get('openclassrooms.onesky.services.language_service')
-            ->getLanguages($projectId, $input->getOption('locale'));
+        foreach ($projectsIds as $projectId) {
+            $projectLanguages = $this->getContainer()
+                ->get('openclassrooms.onesky.services.language_service')
+                ->getLanguages($projectId, $input->getOption('locale'));
+            $languages = array_merge($languages, $projectLanguages);
+        }
         $table = new Table($output);
         $table
-            ->setHeaders(['Locale', 'Progression'])
+            ->setHeaders(['Project', 'Locale', 'Progression'])
             ->setRows(
                 array_map(
                     function (Language $language) {
-                        return [$language->getLocale()." ".$language->getProjectId(), $language->getTranslationProgress()];
+                        return [$language->getProjectId(), $language->getLocale(), $language->getTranslationProgress()];
                     },
                     $languages
                 )

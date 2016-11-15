@@ -51,7 +51,7 @@ class PullCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function with_filePath_execute()
     {
-        $this->commandTester->execute(['command' => PullCommand::COMMAND_NAME, '--filePath' => [self::$filePaths]]);
+        $this->commandTester->execute(['command' => PullCommand::COMMAND_NAME, '--projectId' => [self::$projectId], '--filePath' => [self::$filePaths]]);
         $this->assertEquals([self::$filePaths], TranslationServiceMock::$pulledFilePaths);
     }
 

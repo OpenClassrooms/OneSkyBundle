@@ -19,6 +19,7 @@ class PullCommand extends Command
     {
         $this->setName($this->getCommandName())
             ->setDescription($this->getCommandDescription())
+            ->addOption('projectId', null, InputOption::VALUE_OPTIONAL, 'Project Id')
             ->addOption('filePath', 'dir', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'File paths', [])
             ->addOption(
                 'locale',
@@ -46,6 +47,7 @@ class PullCommand extends Command
     {
         $this->handlePullDisplay($output);
         $this->getContainer()->get('openclassrooms.onesky.services.translation_service')->pull(
+            $input->getOption('projectId'),
             $input->getOption('filePath'),
             $input->getOption('locale')
         );

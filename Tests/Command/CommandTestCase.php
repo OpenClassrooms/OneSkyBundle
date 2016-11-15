@@ -17,6 +17,10 @@ trait CommandTestCase
      * @var string
      */
     public static $filePaths = 'Tests/Fixtures/Resources/translations';
+    /**
+     * @var integer
+     */
+    public static $projectId = 1;
 
     /**
      * @var string[]
