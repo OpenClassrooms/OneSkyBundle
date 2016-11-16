@@ -28,7 +28,6 @@ class LanguageServiceImpl implements LanguageService
         if (empty($locales)) {
             $locales = $this->requestedLocales;
         }
-
         return $this->languageGateway->findLanguages($locales, $projectId);
     }
 

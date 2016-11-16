@@ -26,7 +26,7 @@ class LanguageServiceImplTest extends \PHPUnit_Framework_TestCase
     public function WithoutLocales_getLanguage()
     {
         $languages = $this->service->getLanguages(self::PROJECT_ID);
-        $this->assertEquals([new LanguageStub2()], $languages);
+        $this->assertEquals([self::PROJECT_ID => [new LanguageStub2()]], $languages);
     }
 
     /**
@@ -35,7 +35,7 @@ class LanguageServiceImplTest extends \PHPUnit_Framework_TestCase
     public function getLanguage()
     {
         $languages = $this->service->getLanguages(self::PROJECT_ID, [LanguageStub1::LOCALE, LanguageStub2::LOCALE]);
-        $this->assertEquals([new LanguageStub1(), new LanguageStub2()], $languages);
+        $this->assertEquals([self::PROJECT_ID => [new LanguageStub1(), new LanguageStub2()]], $languages);
     }
 
     /**
@@ -46,7 +46,7 @@ class LanguageServiceImplTest extends \PHPUnit_Framework_TestCase
         $this->service = new LanguageServiceImpl();
         $this->service->setLanguageGateway(
             new InMemoryLanguageGateway(
-                [LanguageStub1::LOCALE => new LanguageStub1(), LanguageStub2::LOCALE => new LanguageStub2()]
+                [self::PROJECT_ID => [LanguageStub1::LOCALE => new LanguageStub1(), LanguageStub2::LOCALE => new LanguageStub2()]]
             )
         );
         $this->service->setRequestedLocales(['ja']);

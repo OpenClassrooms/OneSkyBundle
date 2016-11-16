@@ -116,8 +116,9 @@ class TranslationServiceImpl implements TranslationService
             else
                 return $this->filePaths;
         }
-        elseif ($projectId)
+        elseif ($projectId) {
             return array($projectId => $filePaths);
+        }
         else
             return $this->filePaths;
     }

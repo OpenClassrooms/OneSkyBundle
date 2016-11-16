@@ -2,7 +2,6 @@
 
 namespace OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl;
 
-use Guzzle\Http\Exception\ServerErrorResponseException;
 use Onesky\Api\Client;
 use OpenClassrooms\Bundle\OneSkyBundle\EventListener\TranslationDownloadTranslationEvent;
 use OpenClassrooms\Bundle\OneSkyBundle\EventListener\TranslationUploadTranslationEvent;
@@ -12,6 +11,7 @@ use OpenClassrooms\Bundle\OneSkyBundle\Gateways\NonExistingTranslationException;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\ExportFile;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\UploadFile;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @author Romain Kuzniak <romain.kuzniak@openclassrooms.com>
@@ -75,7 +75,7 @@ class FileGatewayImpl implements FileGateway
                 throw new NonExistingTranslationException($file->getTargetFilePath());
             }
             if (500 === $json['meta']['status']) {
-                throw new ServerErrorResponseException($file->getTargetFilePath());
+                throw new HttpException(500, "Got 500 error receiving ".$file->getTargetFilePath());
             }
             throw new InvalidContentException($downloadedContent);
         }

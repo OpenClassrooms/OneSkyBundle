@@ -73,7 +73,7 @@ class TranslationServiceMock implements TranslationService
     /**
      * {@inheritdoc}
      */
-    public function pull($projectId, array $filePaths, array $locales = [])
+    public function pull($projectId, array $filePaths = [], array $locales = [])
     {
         $this->eventDispatcher->dispatch(
             TranslationPrePullEvent::getEventName(),
@@ -88,14 +88,14 @@ class TranslationServiceMock implements TranslationService
             new TranslationPostPullEvent([new ExportFileStub1()])
         );
         self::$pullCalled = true;
-        self::$pulledFilePaths = array($projectId => $filePaths);
+        self::$pulledFilePaths = $filePaths;
         self::$locales = $locales;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function push($projectId, array $filePaths, array $locales = [])
+    public function push($projectId, array $filePaths = [], array $locales = [])
     {
         $this->eventDispatcher->dispatch(
             TranslationPrePushEvent::getEventName(),
@@ -110,7 +110,7 @@ class TranslationServiceMock implements TranslationService
             new TranslationPostPushEvent([new UploadFileStub1()])
         );
         self::$pushCalled = true;
-        self::$pushedFilePaths = array($projectId => $filePaths);
+        self::$pushedFilePaths = $filePaths;
         self::$locales = $locales;
     }
 
@@ -120,7 +120,7 @@ class TranslationServiceMock implements TranslationService
     public function update($projectId, array $filePaths = [], array $locales = [])
     {
         self::$updateCalled = true;
-        self::$updatedFilePaths = array($projectId => $filePaths);
+        self::$updatedFilePaths = $filePaths;
         self::$locales = $locales;
     }
 }

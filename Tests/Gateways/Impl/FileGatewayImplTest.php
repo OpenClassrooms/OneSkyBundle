@@ -12,6 +12,7 @@ use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\UploadFileStub1;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\UploadFileStub2;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\OneSky\Api\ClientMock;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @author Romain Kuzniak <romain.kuzniak@openclassrooms.com>
@@ -112,12 +113,19 @@ class FileGatewayImplTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Guzzle\Http\Exception\ServerErrorResponseException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException;
      */
     public function ApiServerError_download_ThrowException()
     {
+        $exception = null;
         ClientMock::$downloadedContent = '{"meta":{"status":500,"message":"Something went wrong. Please try again or contact us at support@oneskyapp.com"},"data":{}}';
-        $this->gateway->downloadTranslations([new ExportFileStub1()]);
+        try {
+            $this->gateway->downloadTranslations([new ExportFileStub1()]);
+        } catch (HttpException $e) {
+            $exception = $e;
+        }
+        $this->assertNotNull($exception);
+        $this->assertEquals(500, $exception->getStatusCode());
     }
 
     /**

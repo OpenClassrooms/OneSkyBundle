@@ -46,7 +46,6 @@ class LanguageGatewayImpl implements LanguageGateway
                 throw new LanguageNotFoundException($locale);
             }
         }
-
         return $requestedLanguages;
     }
 
