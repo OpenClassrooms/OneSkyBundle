@@ -58,4 +58,13 @@ abstract class File
     {
         return str_replace(DIRECTORY_SEPARATOR, self::FILENAME_SEPARATOR, $this->sourceFilePathRelativeToProject);
     }
+
+
+    /**
+     * @return int
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
 }

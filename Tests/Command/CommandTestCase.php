@@ -17,16 +17,15 @@ trait CommandTestCase
      * @var string
      */
     public static $filePaths = 'Tests/Fixtures/Resources/translations';
+    /**
+     * @var integer
+     */
+    public static $projectId = 1;
 
     /**
      * @var string[]
      */
     public static $locales = ['fr'];
-
-    /**
-     * @var int
-     */
-    public static $projectId = 1;
 
     /**
      * @return ContainerInterface
@@ -37,9 +36,8 @@ trait CommandTestCase
 
         return new ContainerForTest(
             [
-                'openclassrooms_onesky.file_paths' => [self::$filePaths],
+                'openclassrooms_onesky.file_paths' => [ 1 => [self::$filePaths]],
                 'openclassrooms_onesky.requestedLocales' => self::$locales,
-                'openclassrooms_onesky.project_id' => self::$projectId,
                 'kernel.root_dir' => __DIR__.'/../',
             ],
             [

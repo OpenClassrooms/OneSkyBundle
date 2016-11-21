@@ -3,6 +3,7 @@
 namespace OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Framework\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ScopeInterface;
 
 /**
  * @author Romain Kuzniak <romain.kuzniak@openclassrooms.com>
@@ -28,7 +29,7 @@ class ContainerForTest implements ContainerInterface
     /**
      * {@inheritdoc}
      */
-    public function set($id, $service)
+    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
     {
         return;
     }
@@ -80,4 +81,45 @@ class ContainerForTest implements ContainerInterface
     {
         return;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function enterScope($name)
+    {
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function leaveScope($name)
+    {
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addScope(ScopeInterface $scope)
+    {
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasScope($name)
+    {
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isScopeActive($name)
+    {
+        return;
+    }
 }
+

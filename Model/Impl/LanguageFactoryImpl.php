@@ -12,11 +12,11 @@ class LanguageFactoryImpl implements LanguageFactory
     /**
      * {@inheritdoc}
      */
-    public function createFromCollection(array $data)
+    public function createFromCollection(array $data, $projectId)
     {
         $languages = [];
         foreach ($data as $item) {
-            $languages[] = new LanguageImpl($item);
+            $languages[] = new LanguageImpl($item, $projectId);
         }
 
         return $languages;

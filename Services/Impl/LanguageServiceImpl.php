@@ -23,13 +23,12 @@ class LanguageServiceImpl implements LanguageService
     /**
      * @return \OpenClassrooms\Bundle\OneSkyBundle\Model\Language[]
      */
-    public function getLanguages(array $locales = [])
+    public function getLanguages($projectId, array $locales = [])
     {
         if (empty($locales)) {
             $locales = $this->requestedLocales;
         }
-
-        return $this->languageGateway->findLanguages($locales);
+        return $this->languageGateway->findLanguages($locales, $projectId);
     }
 
     public function setLanguageGateway(LanguageGateway $languageGateway)
