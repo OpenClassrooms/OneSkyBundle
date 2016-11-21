@@ -13,6 +13,7 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\ExportFile;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\UploadFile;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Yaml\Yaml as SFYaml;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @author Romain Kuzniak <romain.kuzniak@openclassrooms.com>
