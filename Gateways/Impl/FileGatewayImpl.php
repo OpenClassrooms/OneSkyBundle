@@ -12,6 +12,7 @@ use OpenClassrooms\Bundle\OneSkyBundle\Gateways\NonExistingTranslationException;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\ExportFile;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\UploadFile;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Yaml\Yaml as SFYaml;
 
 /**
  * @author Romain Kuzniak <romain.kuzniak@openclassrooms.com>
@@ -58,7 +59,14 @@ class FileGatewayImpl implements FileGateway
         );
         $downloadedContent = $this->client->translations(self::DOWNLOAD_METHOD, $file->format());
         $this->checkTranslation($downloadedContent, $file);
-        file_put_contents($file->getTargetFilePath(), $downloadedContent);
+        if(!empty($downloadedContent)) {
+            if (is_callable("yaml_parse"))
+                file_put_contents($file->getTargetFilePath(), SFYaml::dump(yaml_parse($downloadedContent)));
+            else
+                throw new HttpException(500, "PHP YAML extension is missing ( https://pecl.php.net/package/yaml )");
+        }
+        else
+            file_put_contents($file->getTargetFilePath(), $downloadedContent);
 
         return $file;
     }

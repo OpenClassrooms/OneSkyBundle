@@ -21,6 +21,24 @@ or by adding the package to the composer.json file directly:
 }
 ```
 
+This bundle need the YAML extension : https://pecl.php.net/package/yaml
+
+#### PHP 7
+```
+apt-get install php-pear libyaml-dev
+pecl install yaml-2.0.0
+```
+Add "extension=yaml.so" to php.ini for CLI
+
+#### PHP 5
+```
+apt-get install php-pear libyaml-dev
+pecl install yaml
+```
+Add "extension=yaml.so" to php.ini for CLI
+
+
+
 After the package has been installed, add the bundle to the AppKernel.php file:
 ```php
 // in AppKernel::registerBundles()
