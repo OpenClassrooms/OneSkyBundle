@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('source_locale')->cannotBeEmpty()->defaultValue('en')->end()
             ->arrayNode('locales')->isRequired()->cannotBeEmpty()->prototype('scalar')->end()->end()
             ->arrayNode('file_paths')->isRequired()->cannotBeEmpty()->prototype('array')->prototype('scalar')->end()->end()->end()
-            ->arrayNode('file_formats')->prototype('array')->prototype('scalar')->end()->end()->end()
+            ->arrayNode('file_formats')->prototype('scalar')->end()->end()
             ->scalarNode('keep_all_strings')->cannotBeEmpty()->defaultValue(true)->end()
             ->end();
 
