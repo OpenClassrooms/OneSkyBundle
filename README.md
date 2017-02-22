@@ -62,8 +62,10 @@ openclassrooms_onesky:
       - es
     file_format: %onesky.file_format% #optional, default xliff
     file_paths:
-        %onesky.project_id%:
-                - %path.to.translations.files.directory%
+        project_id:
+                - path.to.translations.files.directory%
+    file_formats:
+        project_id: format
     keep_all_strings: false # default true
     
 ```

@@ -31,6 +31,7 @@
             </call>
             <call method="setFileFormat">
                 <argument type="string">%openclassrooms_onesky.file_format%</argument>
+                <argument type="string">%openclassrooms_onesky.file_formats%</argument>
             </call>
             <call method="setKernelRootDir">
                 <argument type="string">%kernel.root_dir%</argument>
