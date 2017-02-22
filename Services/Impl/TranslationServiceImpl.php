@@ -40,6 +40,11 @@ class TranslationServiceImpl implements TranslationService
     private $fileFormat;
 
     /**
+     * @var array
+     */
+    private $fileFormats;
+
+    /**
      * @var FileService
      */
     private $fileService;
@@ -72,7 +77,7 @@ class TranslationServiceImpl implements TranslationService
         $exportFiles = [];
         /** @var SplFileInfo $file */
         foreach ($this->getFilePaths($filePaths, $projectId) as $projectId => &$paths) {
-            foreach ($this->getFiles($paths, $this->getSourceLocales()) as $file) {
+            foreach ($this->getFiles($paths, $this->getSourceLocales(), $projectId) as $file) {
                 foreach ($this->getRequestedLocales($locales) as $locale) {
                     $exportFiles[] = $this->fileFactory->createExportFile($file->getRealPath(), $projectId, $locale);
                 }
@@ -97,12 +102,12 @@ class TranslationServiceImpl implements TranslationService
     /**
      * @return Finder
      */
-    private function getFiles(array $paths, array $locales)
+    private function getFiles(array $paths, array $locales, $projectId)
     {
         return Finder::create()
             ->files()
             ->in($paths)
-            ->name('*.{'.implode(',', $locales).'}.'.$this->fileFormat);
+            ->name('*.{'.implode(',', $locales).'}.'.isset($this->fileFormats[$projectId])?$this->fileFormats[$projectId]:$this->fileFormat);
     }
 
     /**
@@ -149,7 +154,7 @@ class TranslationServiceImpl implements TranslationService
         /* @var SplFileInfo $file */
         foreach ($this->getSourceLocales($locales) as $locale) {
             foreach ($this->getFilePaths($filePaths, $projectId) as $projectId => &$paths) {
-                foreach ($this->getFiles($paths, [$locale]) as $file) {
+                foreach ($this->getFiles($paths, [$locale], $projectId) as $file) {
                     $uploadFiles[] = $this->fileFactory->createUploadFile($file->getRealPath(), $projectId, $locale);
                 }
             }
@@ -180,9 +185,10 @@ class TranslationServiceImpl implements TranslationService
         $this->fileFactory = $fileFactory;
     }
 
-    public function setFileFormat($fileFormat)
+    public function setFileFormat($fileFormat, $fileFormats)
     {
         $this->fileFormat = $fileFormat;
+        $this->fileFormats = $fileFormats;
     }
 
     public function setFilePaths(array $filePaths)

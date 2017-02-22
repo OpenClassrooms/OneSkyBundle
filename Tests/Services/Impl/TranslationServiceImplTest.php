@@ -17,6 +17,7 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
 {
     const IS_KEEPING_ALL_STRINGS = false;
     const FILE_FORMAT = 'yml';
+    const FILE_FORMATS = [1 => 'yml'];
     const KERNEL_ROOT_DIR = __DIR__.'/../../';
     const PROJECT_DIRECTORY = __DIR__.'/../../../';
     const SOURCE_LOCALE = 'en';
@@ -192,12 +193,12 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
         $this->service = new TranslationServiceImpl();
         $fileFactory = new FileFactoryImpl();
         $fileFactory->setKeepingAllStrings(self::IS_KEEPING_ALL_STRINGS);
-        $fileFactory->setFileFormat(self::FILE_FORMAT);
+        $fileFactory->setFileFormat(self::FILE_FORMAT, self::FILE_FORMATS);
         $fileFactory->setKernelRootDir(self::KERNEL_ROOT_DIR);
         $fileFactory->setSourceLocale(self::SOURCE_LOCALE);
         $this->service->setEventDispatcher(new EventDispatcher());
         $this->service->setFileFactory($fileFactory);
-        $this->service->setFileFormat(self::FILE_FORMAT);
+        $this->service->setFileFormat(self::FILE_FORMAT, self::FILE_FORMATS);
         $this->service->setFilePaths([ self::PROJECT_ID => [__DIR__.'/../../Fixtures/Resources/*']]);
         $this->service->setFileService(new FileServiceMock());
         $this->service->setRequestedLocales(['fr', 'es']);

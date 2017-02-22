@@ -62,6 +62,7 @@
             </call>
             <call method="setFileFormat">
                 <argument type="string">%openclassrooms_onesky.file_format%</argument>
+                <argument type="string">%openclassrooms_onesky.file_formats%</argument>
             </call>
             <call method="setFilePaths">
                 <argument type="string">%openclassrooms_onesky.file_paths%</argument>

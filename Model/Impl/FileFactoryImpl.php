@@ -14,6 +14,10 @@ class FileFactoryImpl implements FileFactory
      * @var string
      */
     private $fileFormat;
+    /**
+     * @var array
+     */
+    private $fileFormats;
 
     /**
      * @var string
@@ -55,7 +59,7 @@ class FileFactoryImpl implements FileFactory
             $projectId,
             $filePath,
             $this->getProjectDirectory(),
-            $this->fileFormat,
+            isset($this->fileFormats[$projectId])?$this->fileFormats[$projectId]:$this->fileFormat,
             empty($locale) ? $this->sourceLocale : $locale
         );
 
@@ -69,9 +73,10 @@ class FileFactoryImpl implements FileFactory
         $this->isKeepingAllStrings = $isKeepingAllStrings;
     }
 
-    public function setFileFormat($fileFormat)
+    public function setFileFormat($fileFormat, $fileFormats)
     {
         $this->fileFormat = $fileFormat;
+        $this->fileFormats = $fileFormats;
     }
 
     public function setKernelRootDir($kernelRootDir)
