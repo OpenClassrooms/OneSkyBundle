@@ -73,7 +73,7 @@ class TranslationServiceMock implements TranslationService
     /**
      * {@inheritdoc}
      */
-    public function pull(array $filePaths, array $locales = [])
+    public function pull(array $projectsIds, array $filePaths = [], array $locales = [])
     {
         $this->eventDispatcher->dispatch(
             TranslationPrePullEvent::getEventName(),
@@ -95,7 +95,7 @@ class TranslationServiceMock implements TranslationService
     /**
      * {@inheritdoc}
      */
-    public function push(array $filePaths, array $locales = [])
+    public function push(array $projectsIds, array $filePaths = [], array $locales = [])
     {
         $this->eventDispatcher->dispatch(
             TranslationPrePushEvent::getEventName(),
@@ -117,7 +117,7 @@ class TranslationServiceMock implements TranslationService
     /**
      * {@inheritdoc}
      */
-    public function update(array $filePaths = [], array $locales = [])
+    public function update(array $projectsIds, array $filePaths = [], array $locales = [])
     {
         self::$updateCalled = true;
         self::$updatedFilePaths = $filePaths;

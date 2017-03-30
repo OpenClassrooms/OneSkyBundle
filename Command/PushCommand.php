@@ -19,14 +19,9 @@ class PushCommand extends Command
     {
         $this->setName($this->getCommandName())
             ->setDescription($this->getCommandDescription())
-            ->addOption('filePath', 'dir', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'File path', [])
-            ->addOption(
-                'locale',
-                null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'Source locale',
-                []
-            );
+            ->addOption('projectId', null,  InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Requested projectsIds', [])
+            ->addOption('filePath', 'dir', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'File paths', [])
+            ->addOption('locale', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Source locale', []);
     }
 
     /**
@@ -46,6 +41,7 @@ class PushCommand extends Command
     {
         $this->handlePushDisplay($output);
         $this->getContainer()->get('openclassrooms.onesky.services.translation_service')->push(
+            $input->getOption('projectId'),
             $input->getOption('filePath'),
             $input->getOption('locale')
         );

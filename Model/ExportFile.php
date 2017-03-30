@@ -16,10 +16,9 @@ abstract class ExportFile extends File
      */
     protected $requestedLocale;
 
-    public function __construct($projectId, $sourceFilePath, $projectDirectory, $requestedLocale)
+    public function __construct($project, $sourceFilePath, $projectDirectory, $requestedLocale)
     {
-        parent::__construct($projectId, $sourceFilePath, $projectDirectory);
-        $this->projectId = $projectId;
+        parent::__construct($project, $sourceFilePath, $projectDirectory);
         $this->requestedLocale = $requestedLocale;
     }
 
@@ -59,9 +58,12 @@ abstract class ExportFile extends File
     public function format()
     {
         return [
+            self::FILE_FORMAT => $this->fileFormat,
             self::PROJECT_ID => $this->projectId,
             self::REQUESTED_LOCALE => $this->requestedLocale,
             self::REQUESTED_SOURCE_FILE_NAME => $this->getEncodedSourceFileName(),
         ];
     }
+
+
 }

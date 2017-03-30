@@ -9,14 +9,7 @@ abstract class UploadFile extends File
 {
     const IS_KEEPING_ALL_STRINGS = 'is_keeping_all_strings';
 
-    const FILE_FORMAT = 'file_format';
-
     const SOURCE_LOCALE = 'locale';
-
-    /**
-     * @var string
-     */
-    protected $fileFormat;
 
     /**
      * @var string
@@ -33,14 +26,13 @@ abstract class UploadFile extends File
      */
     protected $isKeepingAllStrings = true;
 
-    public function __construct($projectId, $sourceFilePath, $projectDirectory, $fileFormat, $sourceLocale)
+    public function __construct($project, $sourceFilePath, $projectDirectory, $sourceLocale)
     {
-        parent::__construct($projectId, $sourceFilePath, $projectDirectory);
+        parent::__construct($project, $sourceFilePath, $projectDirectory);
         $this->formattedSourceFilePath = sys_get_temp_dir().'/'.$this->getEncodedSourceFileName();
         copy($sourceFilePath, $this->formattedSourceFilePath);
-
-        $this->fileFormat = $fileFormat;
         $this->sourceLocale = $sourceLocale;
+        $this->isKeepingAllStrings = $project["keep_all_strings"];
     }
 
     /**
@@ -65,8 +57,4 @@ abstract class UploadFile extends File
         return $this->sourceLocale;
     }
 
-    public function setKeepingAllStrings($isKeepingAllStrings)
-    {
-        $this->isKeepingAllStrings = $isKeepingAllStrings;
-    }
 }

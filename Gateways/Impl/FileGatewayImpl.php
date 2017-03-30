@@ -2,7 +2,6 @@
 
 namespace OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl;
 
-use Guzzle\Http\Exception\ServerErrorResponseException;
 use Onesky\Api\Client;
 use OpenClassrooms\Bundle\OneSkyBundle\EventListener\TranslationDownloadTranslationEvent;
 use OpenClassrooms\Bundle\OneSkyBundle\EventListener\TranslationUploadTranslationEvent;
@@ -12,6 +11,8 @@ use OpenClassrooms\Bundle\OneSkyBundle\Gateways\NonExistingTranslationException;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\ExportFile;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\UploadFile;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Yaml\Yaml as SFYaml;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @author Romain Kuzniak <romain.kuzniak@openclassrooms.com>
@@ -58,7 +59,16 @@ class FileGatewayImpl implements FileGateway
         );
         $downloadedContent = $this->client->translations(self::DOWNLOAD_METHOD, $file->format());
         $this->checkTranslation($downloadedContent, $file);
-        file_put_contents($file->getTargetFilePath(), $downloadedContent);
+        if(!empty($downloadedContent)) {
+            if ($file->getFormat() != "yml")
+                file_put_contents($file->getTargetFilePath(), $downloadedContent);
+            else if (is_callable("yaml_parse"))
+                file_put_contents($file->getTargetFilePath(), SFYaml::dump(yaml_parse($downloadedContent)));
+            else
+                throw new HttpException(500, "PHP YAML extension is needed for YAML files ( https://pecl.php.net/package/yaml )");
+        }
+        else
+            file_put_contents($file->getTargetFilePath(), $downloadedContent);
 
         return $file;
     }
@@ -75,7 +85,7 @@ class FileGatewayImpl implements FileGateway
                 throw new NonExistingTranslationException($file->getTargetFilePath());
             }
             if (500 === $json['meta']['status']) {
-                throw new ServerErrorResponseException($file->getTargetFilePath());
+                throw new HttpException(500, "Got 500 error receiving ".$file->getTargetFilePath());
             }
             throw new InvalidContentException($downloadedContent);
         }
@@ -103,6 +113,7 @@ class FileGatewayImpl implements FileGateway
             TranslationUploadTranslationEvent::getEventName(),
             new TranslationUploadTranslationEvent($file)
         );
+
         $this->client->files(self::UPLOAD_METHOD, $file->format());
 
         return $file;

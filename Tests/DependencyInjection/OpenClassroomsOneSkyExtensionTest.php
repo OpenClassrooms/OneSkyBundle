@@ -19,7 +19,8 @@ class OpenClassroomsOneSkyExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = new ContainerBuilder();
         $bundle = new OpenClassroomsOneSkyBundle();
-        $container->registerExtension($bundle->getContainerExtension());
+        $extension = $bundle->getContainerExtension();
+        $container->registerExtension($extension);
         $container->loadFromExtension('openclassrooms_onesky');
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Fixtures/Resources/config'));

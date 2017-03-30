@@ -8,6 +8,7 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\LanguageFactoryImpl;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\Language;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\LanguageStub1;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\LanguageStub2;
+use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\ProjectsStub;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\OneSky\Api\ClientMock;
 
 /**
@@ -27,7 +28,7 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
     public function ApiException_findLanguage_ThrowException()
     {
         ClientMock::$languagesContent = '{"meta": {"status": 400}}';
-        $this->gateway->findLanguages([]);
+        $this->gateway->findLanguages([], ProjectsStub::$projects[1]);
     }
 
     /**
@@ -36,7 +37,7 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
      */
     public function NonExistingLanguage_findLanguages_ThrowException()
     {
-        $this->gateway->findLanguages(['fr']);
+        $this->gateway->findLanguages(['fr'], ProjectsStub::$projects[1]);
     }
 
     /**
@@ -44,7 +45,7 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
      */
     public function findLanguages()
     {
-        $actualLanguages = $this->gateway->findLanguages([LanguageStub1::LOCALE, LanguageStub2::LOCALE]);
+        $actualLanguages = $this->gateway->findLanguages([LanguageStub1::LOCALE, LanguageStub2::LOCALE], ProjectsStub::$projects[1]);
         $expectedLanguages = [new LanguageStub1(), new LanguageStub2()];
         $this->assertEquals(LanguageGateway::LANGUAGES_METHOD, ClientMock::$action);
         $this->assertEquals(['project_id' => 1], ClientMock::$parameters);
@@ -67,6 +68,5 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
         $this->gateway->setClient(new ClientMock());
         ClientMock::$languagesContent = '{"meta": {"status": 200,"record_count": 3},"data": [{"code": "en-US","english_name": "English (United States)","local_name": "English (United States)","locale": "en","region": "US","is_base_language": true,"is_ready_to_publish": true,"translation_progress": "100%","uploaded_at": "2013-10-07T15:27:10+0000","uploaded_at_timestamp": 1381159630},{"code": "ja-JP","english_name": "Japanese","local_name": "日本語","locale": "ja","region": "JP","is_base_language": false,"is_ready_to_publish": true,"translation_progress": "98%","uploaded_at": "2013-10-07T15:27:10+0000","uploaded_at_timestamp": 1381159630},{"code": "ko-KR","english_name": "Korean","local_name": "한국어","locale": "ko","region": "KR","is_base_language": false,"is_ready_to_publish": true,"translation_progress": "56%","uploaded_at": "2013-10-07T15:27:10+0000","uploaded_at_timestamp": 1381159630}]}';
         $this->gateway->setLanguageFactory(new LanguageFactoryImpl());
-        $this->gateway->setProjectId(1);
     }
 }

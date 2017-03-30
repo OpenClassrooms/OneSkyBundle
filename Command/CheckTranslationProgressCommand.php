@@ -2,6 +2,7 @@
 
 namespace OpenClassrooms\Bundle\OneSkyBundle\Command;
 
+use OpenClassrooms\Bundle\OneSkyBundle\Gateways\LanguageNotFoundException;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\Language;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
@@ -22,13 +23,8 @@ class CheckTranslationProgressCommand extends ContainerAwareCommand
     {
         $this->setName($this->getCommandName())
             ->setDescription($this->getCommandDescription())
-            ->addOption(
-                'locale',
-                null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'Requested locales',
-                []
-            );
+            ->addOption('projectId', null,  InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Requested projectsIds', [])
+            ->addOption('locale', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Source locale', []);
     }
 
     /**
@@ -44,19 +40,54 @@ class CheckTranslationProgressCommand extends ContainerAwareCommand
         return self::COMMAND_DESCRIPTION;
     }
 
+    private function getLocales($project, array $locales)
+    {
+        if(empty($locales))
+            return $project["locales"];
+        else
+            return $locales;
+    }
+
+    private function getProjects(array $projects, array $projectsIds)
+    {
+        if(empty($projectsIds))
+            return $projects;
+        else
+        {
+            foreach ($projects as $projectId => &$project)
+                if(!in_array($projectId, $projectsIds))
+                    unset($projects[$projectId]);
+            return $projects;
+        }
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $projects = $this->getProjects($this->getContainer()->getParameter('openclassrooms_onesky.projects'), $input->getOption('projectId'));
         $output->writeln('<info>Check translations progress</info>');
-        $languages = $this->getContainer()
-            ->get('openclassrooms.onesky.services.language_service')
-            ->getLanguages($input->getOption('locale'));
+        $languages = [];
+        foreach ($projects as $projectId => &$project) {
+            try {
+                $projectLanguages = $this->getContainer()
+                    ->get('openclassrooms.onesky.services.language_service')
+                    ->getLanguages($project, $this->getLocales($project, $input->getOption('locale')));
+                $languages = array_merge($languages, $projectLanguages);
+            } catch(LanguageNotFoundException $e) {
+                if(!empty($input->getOption('locale')))
+                    $output->writeln('<info>Language '.$input->getOption('locale').' not found for project '.$projectId.'</info>');
+                else
+                    throw $e;
+            }
+        }
+        if(empty($languages))
+            throw new LanguageNotFoundException();
         $table = new Table($output);
         $table
-            ->setHeaders(['Locale', 'Progression'])
+            ->setHeaders(['Project', 'Locale', 'Progression'])
             ->setRows(
                 array_map(
                     function (Language $language) {
-                        return [$language->getLocale(), $language->getTranslationProgress()];
+                        return [$language->getProjectId(), $language->getLocale(), $language->getTranslationProgress()];
                     },
                     $languages
                 )
@@ -68,7 +99,6 @@ class CheckTranslationProgressCommand extends ContainerAwareCommand
                 return 1;
             }
         }
-
         return 0;
     }
 }

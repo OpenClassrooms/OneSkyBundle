@@ -13,6 +13,6 @@ class ExportFileStub1 extends ExportFileStub
 
     public function __construct()
     {
-        parent::__construct(self::PROJECT_ID, self::SOURCE_FILE_PATH, self::PROJECT_DIRECTORY, self::REQUESTED_LOCALE);
+        parent::__construct(self::PROJECT, self::SOURCE_FILE_PATH, self::PROJECT_DIRECTORY, self::REQUESTED_LOCALE);
     }
 }

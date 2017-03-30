@@ -17,5 +17,6 @@ class LanguageStub2 extends LanguageImpl
 
     public function __construct()
     {
+        $this->projectId = ProjectsStub::$projects[1]["id"];
     }
 }

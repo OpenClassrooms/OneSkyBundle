@@ -24,25 +24,10 @@
             <call method="setLanguageFactory">
                 <argument type="service" id="openclassrooms.onesky.model.language_factory"/>
             </call>
-            <call method="setProjectId">
-                <argument type="string">%openclassrooms_onesky.project_id%</argument>
-            </call>
         </service>
         <service id="openclassrooms.onesky.model.file_factory" class="OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\FileFactoryImpl">
-            <call method="setKeepingAllStrings">
-                <argument type="string">%openclassrooms_onesky.keep_all_strings%</argument>
-            </call>
-            <call method="setFileFormat">
-                <argument type="string">%openclassrooms_onesky.file_format%</argument>
-            </call>
             <call method="setKernelRootDir">
                 <argument type="string">%kernel.root_dir%</argument>
-            </call>
-            <call method="setProjectId">
-                <argument type="string">%openclassrooms_onesky.project_id%</argument>
-            </call>
-            <call method="setSourceLocale">
-                <argument type="string">%openclassrooms_onesky.source_locale%</argument>
             </call>
         </service>
         <service id="openclassrooms.onesky.model.language_factory" class="OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\LanguageFactoryImpl"/>
@@ -55,9 +40,6 @@
             <call method="setLanguageGateway">
                 <argument type="service" id="openclassrooms.onesky.gateways.language"/>
             </call>
-            <call method="setRequestedLocales">
-                <argument>%openclassrooms_onesky.locales%</argument>
-            </call>
         </service>
         <service id="openclassrooms.onesky.services.translation_service" class="OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\TranslationServiceImpl">
             <call method="setEventDispatcher">
@@ -66,20 +48,11 @@
             <call method="setFileFactory">
                 <argument type="service" id="openclassrooms.onesky.model.file_factory"/>
             </call>
-            <call method="setFileFormat">
-                <argument type="string">%openclassrooms_onesky.file_format%</argument>
-            </call>
-            <call method="setFilePaths">
-                <argument type="string">%openclassrooms_onesky.file_paths%</argument>
+            <call method="setProjects">
+                <argument type="string">%openclassrooms_onesky.projects%</argument>
             </call>
             <call method="setFileService">
                 <argument type="service" id="openclassrooms.onesky.services.file_service"/>
-            </call>
-            <call method="setRequestedLocales">
-                <argument>%openclassrooms_onesky.locales%</argument>
-            </call>
-            <call method="setSourceLocale">
-                <argument type="string">%openclassrooms_onesky.source_locale%</argument>
             </call>
         </service>
     </services>

@@ -24,14 +24,14 @@ class InMemoryLanguageGateway implements LanguageGateway
     /**
      * {@inheritdoc}
      */
-    public function findLanguages(array $locales = [])
+    public function findLanguages(array $locales = [], array $project)
     {
         $languages = [];
         foreach ($locales as $locale) {
-            if (!isset(self::$languages[$locale])) {
+            if (!isset(self::$languages[$project["id"]][$locale])) {
                 throw new LanguageNotFoundException();
             } else {
-                $languages[] = self::$languages[$locale];
+                $languages[$project["id"]][] = self::$languages[$project["id"]][$locale];
             }
         }
 

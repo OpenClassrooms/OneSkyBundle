@@ -10,5 +10,5 @@ interface LanguageFactory
     /**
      * @return Language[]
      */
-    public function createFromCollection(array $data);
+    public function createFromCollection(array $data, $projectId);
 }

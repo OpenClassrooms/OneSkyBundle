@@ -3,6 +3,7 @@
 namespace OpenClassrooms\Bundle\OneSkyBundle\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -17,7 +18,10 @@ class UpdateCommand extends Command
     protected function configure()
     {
         $this->setName($this->getCommandName())
-            ->setDescription($this->getCommandDescription());
+            ->setDescription($this->getCommandDescription())
+            ->addOption('projectId', null,  InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Requested projectsIds', [])
+            ->addOption('filePath', 'dir', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'File paths', [])
+            ->addOption('locale', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Source locale', []);
     }
 
     /**
@@ -38,6 +42,10 @@ class UpdateCommand extends Command
         $output->writeln("<info>Updating translations</info>\n");
         $this->handlePullDisplay($output);
         $this->handlePushDisplay($output);
-        $this->getContainer()->get('openclassrooms.onesky.services.translation_service')->update();
+        $this->getContainer()->get('openclassrooms.onesky.services.translation_service')->update(
+            $input->getOption('projectId'),
+            $input->getOption('filePath'),
+            $input->getOption('locale')
+        );
     }
 }

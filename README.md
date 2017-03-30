@@ -21,6 +21,24 @@ or by adding the package to the composer.json file directly:
 }
 ```
 
+If you want to use YAML files, you need the PECL YAML extension : https://pecl.php.net/package/yaml
+
+#### PHP 7
+```
+apt-get install php-pear libyaml-dev
+pecl install yaml-2.0.0
+```
+Add "extension=yaml.so" to php.ini for CLI
+
+#### PHP 5
+```
+apt-get install php-pear libyaml-dev
+pecl install yaml
+```
+Add "extension=yaml.so" to php.ini for CLI
+
+
+
 After the package has been installed, add the bundle to the AppKernel.php file:
 ```php
 // in AppKernel::registerBundles()
@@ -36,17 +54,23 @@ $bundles = array(
 # app/config/config.yml
 
 openclassrooms_onesky:
-    api_key:  %onesky.api_key%
+    api_key: %onesky.api_key%
     api_secret: %onesky.api_secret%
-    project_id: %onesky.project_id%
-    source_locale: %source_locale% #optional, default en
-    locales:
-      - fr
-      - es
-    file_format: %onesky.file_format% #optional, default xliff
-    file_paths:
-      - %path.to.translations.files.directory%
-    keep_all_strings: false # default true
+    projects:
+        1:
+            file_format: yml
+            source_locale: en
+            locales: [en,fr,ja]
+            keep_all_strings: 0
+            file_paths:
+              - "%kernel.root_dir%/../src/Bundle/DemoBundle/Resources/translations"
+        2:
+            file_format: xliff
+            source_locale: fr
+            locales: [fr,es]
+            keep_all_strings: 1
+            file_paths:
+              - "%kernel.root_dir%/../app/Resources/translations/"
     
 ```
 
@@ -72,6 +96,12 @@ Locale can be set as an option.
 php app/console openclassrooms:one-sky:pull --locale=fr
 php app/console openclassrooms:one-sky:pull --locale=fr --locale=es
 ```
+##### Project id
+ Project id can be set as an option.
+```bash
+php app/console openclassrooms:one-sky:pull --projectId=1
+php app/console openclassrooms:one-sky:pull --projectId=1  --projectId=2
+```
 
 ### Push
 Push the translations from the OneSky API using the default configuration.
@@ -93,6 +123,12 @@ Locale can be set as an option.
 ```bash
 php app/console openclassrooms:one-sky:push --locale=en
 php app/console openclassrooms:one-sky:push --locale=en --locale=fr
+```
+##### Project id
+ Project id can be set as an option.
+```bash
+php app/console openclassrooms:one-sky:push --projectId=1
+php app/console openclassrooms:one-sky:push --projectId=1  --projectId=2
 ```
 
 ### Update
@@ -118,3 +154,10 @@ Locale can be set as an option.
 php app/console openclassrooms:one-sky:check-translation-progress --locale=en
 php app/console openclassrooms:one-sky:check-translation-progress --locale=en --locale=fr
 ```
+##### Project id
+ Project id can be set as an option.
+```bash
+php app/console openclassrooms:one-sky:check-translation-progress --projectId=1
+php app/console openclassrooms:one-sky:check-translation-progress --projectId=1  --projectId=2
+```
+

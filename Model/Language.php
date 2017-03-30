@@ -10,6 +10,11 @@ abstract class Language
     /**
      * @var string
      */
+    protected $projectId;
+
+    /**
+     * @var string
+     */
     protected $locale;
 
     /**
@@ -39,5 +44,13 @@ abstract class Language
     public function getTranslationProgress()
     {
         return $this->translationProgress;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
     }
 }

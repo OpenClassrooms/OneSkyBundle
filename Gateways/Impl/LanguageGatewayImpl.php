@@ -25,24 +25,19 @@ class LanguageGatewayImpl implements LanguageGateway
     private $languageFactory;
 
     /**
-     * @var int
-     */
-    private $projectId;
-
-    /**
      * @return \OpenClassrooms\Bundle\OneSkyBundle\Model\Language[]
      *
      * @throws LanguageException
      * @throws LanguageNotFoundException
      */
-    public function findLanguages(array $locales)
+    public function findLanguages(array $locales, array $project)
     {
-        $jsonResponse = $this->client->projects(self::LANGUAGES_METHOD, ['project_id' => $this->projectId]);
+        $jsonResponse = $this->client->projects(self::LANGUAGES_METHOD, ['project_id' => $project["id"]]);
         $response = json_decode($jsonResponse, true);
 
         $this->checkResponse($response, $jsonResponse);
 
-        $languages = $this->createLanguages($response);
+        $languages = $this->createLanguages($response, $project["id"]);
         $requestedLanguages = [];
         foreach ($locales as $locale) {
             if (isset($languages[$locale])) {
@@ -51,7 +46,6 @@ class LanguageGatewayImpl implements LanguageGateway
                 throw new LanguageNotFoundException($locale);
             }
         }
-
         return $requestedLanguages;
     }
 
@@ -68,9 +62,9 @@ class LanguageGatewayImpl implements LanguageGateway
     /**
      * @return \OpenClassrooms\Bundle\OneSkyBundle\Model\Language[]
      */
-    private function createLanguages($response)
+    private function createLanguages($response, $projectId)
     {
-        $languages = $this->languageFactory->createFromCollection($response['data']);
+        $languages = $this->languageFactory->createFromCollection($response['data'], $projectId);
 
         return $this->formatLanguages($languages);
     }
@@ -98,10 +92,5 @@ class LanguageGatewayImpl implements LanguageGateway
     public function setLanguageFactory(LanguageFactory $languageFactory)
     {
         $this->languageFactory = $languageFactory;
-    }
-
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
     }
 }

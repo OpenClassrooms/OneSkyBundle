@@ -10,10 +10,6 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\FileFactory;
  */
 class FileFactoryImpl implements FileFactory
 {
-    /**
-     * @var string
-     */
-    private $fileFormat;
 
     /**
      * @var string
@@ -21,26 +17,11 @@ class FileFactoryImpl implements FileFactory
     private $kernelRootDir;
 
     /**
-     * @var int
-     */
-    private $projectId;
-
-    /**
-     * @var string
-     */
-    private $sourceLocale;
-
-    /**
-     * @var bool
-     */
-    private $isKeepingAllStrings;
-
-    /**
      * @return ExportFile
      */
-    public function createExportFile($sourceFilePath, $requestedLocale)
+    public function createExportFile($sourceFilePath, $project, $requestedLocale)
     {
-        return new ExportFileImpl($this->projectId, $sourceFilePath, $this->getProjectDirectory(), $requestedLocale);
+        return new ExportFileImpl($project, $sourceFilePath, $this->getProjectDirectory(), $requestedLocale);
     }
 
     /**
@@ -54,29 +35,16 @@ class FileFactoryImpl implements FileFactory
     /**
      * {@inheritdoc}
      */
-    public function createUploadFile($filePath, $locale = null)
+    public function createUploadFile($filePath, $project, $locale)
     {
         $file =  new UploadFileImpl(
-            $this->projectId,
+            $project,
             $filePath,
             $this->getProjectDirectory(),
-            $this->fileFormat,
-            empty($locale) ? $this->sourceLocale : $locale
+            $locale
         );
 
-        $file->setKeepingAllStrings($this->isKeepingAllStrings);
-
         return $file;
-    }
-
-    public function setKeepingAllStrings($isKeepingAllStrings)
-    {
-        $this->isKeepingAllStrings = $isKeepingAllStrings;
-    }
-
-    public function setFileFormat($fileFormat)
-    {
-        $this->fileFormat = $fileFormat;
     }
 
     public function setKernelRootDir($kernelRootDir)
@@ -84,13 +52,4 @@ class FileFactoryImpl implements FileFactory
         $this->kernelRootDir = $kernelRootDir;
     }
 
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
-    }
-
-    public function setSourceLocale($sourceLocale)
-    {
-        $this->sourceLocale = $sourceLocale;
-    }
 }
