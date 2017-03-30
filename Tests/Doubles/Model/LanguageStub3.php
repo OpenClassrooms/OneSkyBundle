@@ -7,16 +7,16 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\LanguageImpl;
 /**
  * @author Romain Kuzniak <romain.kuzniak@openclassrooms.com>
  */
-class LanguageStub1 extends LanguageImpl
+class LanguageStub3 extends LanguageImpl
 {
-    const LOCALE = 'en';
+    const LOCALE = 'ja';
 
     protected $locale = self::LOCALE;
 
-    protected $translationProgress = '100%';
+    protected $translationProgress = '98%';
 
     public function __construct()
     {
-        $this->projectId = ProjectsStub::$projects[1]["id"];
+        $this->projectId = ProjectsStub::$projects[2]["id"];
     }
 }

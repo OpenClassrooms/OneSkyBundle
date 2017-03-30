@@ -17,7 +17,7 @@ interface TranslationService
      *
      * @return ExportFile[] $files
      */
-    public function pull($projectId, array $filePaths, array $locales = []);
+    public function pull(array $projectsIds, array $filePaths, array $locales = []);
 
     /**
      * @param integer $projectId
@@ -25,7 +25,7 @@ interface TranslationService
      *
      * @return UploadFile[] $files
      */
-    public function push($projectId, array $filePaths, array $locales = []);
+    public function push(array $projectsIds, array $filePaths, array $locales = []);
 
     /**
      * @param integer $projectId
@@ -33,5 +33,5 @@ interface TranslationService
      *
      * @return [ExportFile[], UploadFile[]] $files
      */
-    public function update($projectId, array $filePaths, array $locales = []);
+    public function update(array $projectsIds, array $filePaths, array $locales = []);
 }

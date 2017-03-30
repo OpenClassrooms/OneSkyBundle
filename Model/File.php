@@ -11,6 +11,8 @@ abstract class File
 
     const PROJECT_ID = 'project_id';
 
+    const FILE_FORMAT = 'file_format';
+
     const SOURCE_FILE_PATH = 'file';
 
     /**
@@ -28,12 +30,19 @@ abstract class File
      */
     protected $sourceFilePathRelativeToProject;
 
+
+    /**
+     * @var string
+     */
+    protected $fileFormat;
+
     /**
      * {@inheritdoc}
      */
-    public function __construct($projectId, $sourceFilePath, $projectDirectory)
+    public function __construct($project, $sourceFilePath, $projectDirectory)
     {
-        $this->projectId = $projectId;
+        $this->fileFormat = $project["file_format"];
+        $this->projectId = $project["id"];
         $this->sourceFilePath = realpath($sourceFilePath);
         $this->sourceFilePathRelativeToProject = str_replace(realpath($projectDirectory), '', $this->sourceFilePath);
     }
@@ -66,5 +75,13 @@ abstract class File
     public function getProjectId()
     {
         return $this->projectId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormat()
+    {
+        return $this->fileFormat;
     }
 }

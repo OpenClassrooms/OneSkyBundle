@@ -9,13 +9,18 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\UploadFileImpl;
  */
 abstract class UploadFileStub extends UploadFileImpl
 {
-    const FILE_FORMAT = 'yaml';
 
     const PROJECT_DIRECTORY = __DIR__.'/../../../';
 
-    const PROJECT_ID = 1;
-
-    const SOURCE_LOCALE = 'en';
+    const PROJECT =
+    [
+        "id" => 1,
+        "file_format" => "yml",
+        "source_locale" => "en",
+        "locales" => ["en","fr","ja"],
+        "keep_all_strings" => 0,
+        "file_paths" => [ "__DIR__.'/../'Tests/Fixtures/Resources/translations/"]
+    ];
 
     /**
      * @return string

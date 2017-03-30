@@ -10,14 +10,6 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\FileFactory;
  */
 class FileFactoryImpl implements FileFactory
 {
-    /**
-     * @var string
-     */
-    private $fileFormat;
-    /**
-     * @var array
-     */
-    private $fileFormats;
 
     /**
      * @var string
@@ -25,21 +17,11 @@ class FileFactoryImpl implements FileFactory
     private $kernelRootDir;
 
     /**
-     * @var string
-     */
-    private $sourceLocale;
-
-    /**
-     * @var bool
-     */
-    private $isKeepingAllStrings;
-
-    /**
      * @return ExportFile
      */
-    public function createExportFile($sourceFilePath, $projectId, $requestedLocale)
+    public function createExportFile($sourceFilePath, $project, $requestedLocale)
     {
-        return new ExportFileImpl($projectId, $sourceFilePath, $this->getProjectDirectory(), $requestedLocale);
+        return new ExportFileImpl($project, $sourceFilePath, $this->getProjectDirectory(), $requestedLocale);
     }
 
     /**
@@ -53,30 +35,16 @@ class FileFactoryImpl implements FileFactory
     /**
      * {@inheritdoc}
      */
-    public function createUploadFile($filePath, $projectId, $locale = null)
+    public function createUploadFile($filePath, $project, $locale)
     {
         $file =  new UploadFileImpl(
-            $projectId,
+            $project,
             $filePath,
             $this->getProjectDirectory(),
-            isset($this->fileFormats[$projectId])?$this->fileFormats[$projectId]:$this->fileFormat,
-            empty($locale) ? $this->sourceLocale : $locale
+            $locale
         );
 
-        $file->setKeepingAllStrings($this->isKeepingAllStrings);
-
         return $file;
-    }
-
-    public function setKeepingAllStrings($isKeepingAllStrings)
-    {
-        $this->isKeepingAllStrings = $isKeepingAllStrings;
-    }
-
-    public function setFileFormat($fileFormat, $fileFormats)
-    {
-        $this->fileFormat = $fileFormat;
-        $this->fileFormats = $fileFormats;
     }
 
     public function setKernelRootDir($kernelRootDir)
@@ -84,8 +52,4 @@ class FileFactoryImpl implements FileFactory
         $this->kernelRootDir = $kernelRootDir;
     }
 
-    public function setSourceLocale($sourceLocale)
-    {
-        $this->sourceLocale = $sourceLocale;
-    }
 }

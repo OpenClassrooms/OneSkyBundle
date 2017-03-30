@@ -60,10 +60,12 @@ class FileGatewayImpl implements FileGateway
         $downloadedContent = $this->client->translations(self::DOWNLOAD_METHOD, $file->format());
         $this->checkTranslation($downloadedContent, $file);
         if(!empty($downloadedContent)) {
-            if (is_callable("yaml_parse"))
+            if ($file->getFormat() != "yml")
+                file_put_contents($file->getTargetFilePath(), $downloadedContent);
+            else if (is_callable("yaml_parse"))
                 file_put_contents($file->getTargetFilePath(), SFYaml::dump(yaml_parse($downloadedContent)));
             else
-                throw new HttpException(500, "PHP YAML extension is missing ( https://pecl.php.net/package/yaml )");
+                throw new HttpException(500, "PHP YAML extension is needed for YAML files ( https://pecl.php.net/package/yaml )");
         }
         else
             file_put_contents($file->getTargetFilePath(), $downloadedContent);
@@ -111,6 +113,7 @@ class FileGatewayImpl implements FileGateway
             TranslationUploadTranslationEvent::getEventName(),
             new TranslationUploadTranslationEvent($file)
         );
+
         $this->client->files(self::UPLOAD_METHOD, $file->format());
 
         return $file;

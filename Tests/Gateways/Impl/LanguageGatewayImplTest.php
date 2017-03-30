@@ -8,6 +8,7 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\LanguageFactoryImpl;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\Language;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\LanguageStub1;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\LanguageStub2;
+use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\ProjectsStub;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\OneSky\Api\ClientMock;
 
 /**
@@ -20,8 +21,6 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
      */
     private $gateway;
 
-    const PROJECT_ID = 1;
-
     /**
      * @test
      * @expectedException \OpenClassrooms\Bundle\OneSkyBundle\Gateways\LanguageException
@@ -29,7 +28,7 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
     public function ApiException_findLanguage_ThrowException()
     {
         ClientMock::$languagesContent = '{"meta": {"status": 400}}';
-        $this->gateway->findLanguages([], self::PROJECT_ID);
+        $this->gateway->findLanguages([], ProjectsStub::$projects[1]);
     }
 
     /**
@@ -38,7 +37,7 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
      */
     public function NonExistingLanguage_findLanguages_ThrowException()
     {
-        $this->gateway->findLanguages(['fr'], self::PROJECT_ID);
+        $this->gateway->findLanguages(['fr'], ProjectsStub::$projects[1]);
     }
 
     /**
@@ -46,7 +45,7 @@ class LanguageGatewayImplTest extends \PHPUnit_Framework_TestCase
      */
     public function findLanguages()
     {
-        $actualLanguages = $this->gateway->findLanguages([LanguageStub1::LOCALE, LanguageStub2::LOCALE], self::PROJECT_ID);
+        $actualLanguages = $this->gateway->findLanguages([LanguageStub1::LOCALE, LanguageStub2::LOCALE], ProjectsStub::$projects[1]);
         $expectedLanguages = [new LanguageStub1(), new LanguageStub2()];
         $this->assertEquals(LanguageGateway::LANGUAGES_METHOD, ClientMock::$action);
         $this->assertEquals(['project_id' => 1], ClientMock::$parameters);

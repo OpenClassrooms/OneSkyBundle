@@ -7,6 +7,7 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\FileFactoryImpl;
 use OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\UploadFileImpl;
 use OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\TranslationServiceImpl;
 use OpenClassrooms\Bundle\OneSkyBundle\Services\TranslationService;
+use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\ProjectsStub;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Services\FileServiceMock;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -15,13 +16,8 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
 {
-    const IS_KEEPING_ALL_STRINGS = false;
-    const FILE_FORMAT = 'yml';
-    const FILE_FORMATS = [1 => 'yml'];
     const KERNEL_ROOT_DIR = __DIR__.'/../../';
     const PROJECT_DIRECTORY = __DIR__.'/../../../';
-    const SOURCE_LOCALE = 'en';
-    const PROJECT_ID = 1;
 
     /**
      * @var TranslationService
@@ -33,9 +29,21 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     public function pull_with_locales()
     {
-        $this->service->pull(self::PROJECT_ID , [__DIR__.'/../../Fixtures/Resources/translations'], ['es']);
+        $this->service->pull([] , ProjectsStub::$projects[1]["file_paths"], ['ja']);
         $this->assertEquals(
-            [$this->buildExportFile1es(), $this->buildExportFile2es()],
+            [$this->buildExportFile1ja(), $this->buildExportFile2ja()],
+            FileServiceMock::$downloadedFiles
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function pull_with_locales_and_projects()
+    {
+        $this->service->pull([1] , ProjectsStub::$projects[1]["file_paths"], ['ja']);
+        $this->assertEquals(
+            [$this->buildExportFile1ja(), $this->buildExportFile2ja()],
             FileServiceMock::$downloadedFiles
         );
     }
@@ -43,24 +51,24 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
     /**
      * @return ExportFileImpl
      */
-    private function buildExportFile1es()
+    private function buildExportFile1ja()
     {
         return new ExportFileImpl(
-            self::PROJECT_ID, __DIR__.'/../../Fixtures/Resources/translations/messages.en.yml',
+            ProjectsStub::$projects[1], ProjectsStub::$projects[1]["file_paths"][0].'messages.en.yml',
             self::PROJECT_DIRECTORY,
-            'es'
+            'ja'
         );
     }
 
     /**
      * @return ExportFileImpl
      */
-    private function buildExportFile2es()
+    private function buildExportFile2ja()
     {
         return new ExportFileImpl(
-            self::PROJECT_ID, __DIR__.'/../../Fixtures/Resources/translations/subDirectory/messages.en.yml',
+            ProjectsStub::$projects[1], ProjectsStub::$projects[1]["file_paths"][0].'subDirectory/messages.en.yml',
             self::PROJECT_DIRECTORY,
-            'es'
+            'ja'
         );
     }
 
@@ -69,13 +77,13 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     public function WithoutFilePaths_pull()
     {
-        $this->service->pull(self::PROJECT_ID, []);
+        $this->service->pull([], []);
         $this->assertEquals(
             [
-                $this->buildExportFile1fr(),
-                $this->buildExportFile1es(),
-                $this->buildExportFile2fr(),
-                $this->buildExportFile2es(),
+                $this->buildExportFile1en(),
+                $this->buildExportFile1ja(),
+                $this->buildExportFile2en(),
+                $this->buildExportFile2ja(),
             ],
             FileServiceMock::$downloadedFiles
         );
@@ -84,24 +92,24 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
     /**
      * @return ExportFileImpl
      */
-    private function buildExportFile1fr()
+    private function buildExportFile1en()
     {
         return new ExportFileImpl(
-            self::PROJECT_ID, __DIR__.'/../../Fixtures/Resources/translations/messages.en.yml',
+            ProjectsStub::$projects[1], ProjectsStub::$projects[1]["file_paths"][0].'messages.en.yml',
             self::PROJECT_DIRECTORY,
-            'fr'
+            'en'
         );
     }
 
     /**
      * @return ExportFileImpl
      */
-    private function buildExportFile2fr()
+    private function buildExportFile2en()
     {
         return new ExportFileImpl(
-            self::PROJECT_ID, __DIR__.'/../../Fixtures/Resources/translations/subDirectory/messages.en.yml',
+            ProjectsStub::$projects[1], ProjectsStub::$projects[1]["file_paths"][0].'subDirectory/messages.en.yml',
             self::PROJECT_DIRECTORY,
-            'fr'
+            'en'
         );
     }
 
@@ -110,11 +118,26 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     public function pull()
     {
-        $this->service->pull(self::PROJECT_ID, [__DIR__.'/../../Fixtures/Resources/translations/subDirectory']);
+        $this->service->pull([], [ProjectsStub::$projects[1]["file_paths"][0].'subDirectory']);
         $this->assertEquals(
             [
-                $this->buildExportFile2fr(),
-                $this->buildExportFile2es(),
+                $this->buildExportFile2en(),
+                $this->buildExportFile2ja(),
+            ],
+            FileServiceMock::$downloadedFiles
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function pull_with_projects()
+    {
+        $this->service->pull([1], [ProjectsStub::$projects[1]["file_paths"][0].'subDirectory']);
+        $this->assertEquals(
+            [
+                $this->buildExportFile2en(),
+                $this->buildExportFile2ja(),
             ],
             FileServiceMock::$downloadedFiles
         );
@@ -125,7 +148,7 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     public function WithoutFilePath_push()
     {
-        $this->service->push(self::PROJECT_ID, []);
+        $this->service->push([], []);
         $this->assertEquals([$this->buildUploadFile1(), $this->buildUploadFile2()], FileServiceMock::$uploadedFiles);
     }
 
@@ -135,13 +158,11 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
     private function buildUploadFile1()
     {
         $file = new UploadFileImpl(
-            self::PROJECT_ID,
-            __DIR__.'/../../Fixtures/Resources/translations/messages.en.yml',
+            ProjectsStub::$projects[1],
+            ProjectsStub::$projects[1]["file_paths"][0].'messages.en.yml',
             self::PROJECT_DIRECTORY,
-            self::FILE_FORMAT,
-            self::SOURCE_LOCALE
+            'en'
         );
-        $file->setKeepingAllStrings(self::IS_KEEPING_ALL_STRINGS);
 
         return $file;
     }
@@ -152,13 +173,11 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
     private function buildUploadFile2()
     {
         $file = new UploadFileImpl(
-            self::PROJECT_ID,
-            __DIR__.'/../../Fixtures/Resources/translations/subDirectory/messages.en.yml',
+            ProjectsStub::$projects[1],
+            ProjectsStub::$projects[1]["file_paths"][0].'subDirectory/messages.en.yml',
             self::PROJECT_DIRECTORY,
-            self::FILE_FORMAT,
-            self::SOURCE_LOCALE
+            'en'
         );
-        $file->setKeepingAllStrings(self::IS_KEEPING_ALL_STRINGS);
 
         return $file;
     }
@@ -168,7 +187,34 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     public function push()
     {
-        $this->service->push(self::PROJECT_ID, [__DIR__.'/../../Fixtures/Resources/*']);
+        $this->service->push([], ProjectsStub::$projects[1]["file_paths"]);
+        $this->assertEquals([$this->buildUploadFile1(), $this->buildUploadFile2()], FileServiceMock::$uploadedFiles);
+    }
+
+    /**
+     * @test
+     */
+    public function push_with_projects()
+    {
+        $this->service->push([1], ProjectsStub::$projects[1]["file_paths"]);
+        $this->assertEquals([$this->buildUploadFile1(), $this->buildUploadFile2()], FileServiceMock::$uploadedFiles);
+    }
+
+    /**
+     * @test
+     */
+    public function push_with_locales()
+    {
+        $this->service->push([], ProjectsStub::$projects[1]["file_paths"], ["en"]);
+        $this->assertEquals([$this->buildUploadFile1(), $this->buildUploadFile2()], FileServiceMock::$uploadedFiles);
+    }
+
+    /**
+     * @test
+     */
+    public function push_with_projects_and_locales()
+    {
+        $this->service->push([1], ProjectsStub::$projects[1]["file_paths"], ["en"]);
         $this->assertEquals([$this->buildUploadFile1(), $this->buildUploadFile2()], FileServiceMock::$uploadedFiles);
     }
 
@@ -177,9 +223,22 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
      */
     public function WithLocales_update_Update()
     {
-        $this->service->update(self::PROJECT_ID, [__DIR__.'/../../Fixtures/Resources/'], ['es']);
+        $this->service->update([], ProjectsStub::$projects[1]["file_paths"], ['ja']);
         $this->assertEquals(
-            [$this->buildExportFile1es(), $this->buildExportFile2es()],
+            [$this->buildExportFile1ja(), $this->buildExportFile2ja()],
+            FileServiceMock::$downloadedFiles
+        );
+        $this->assertEquals([$this->buildUploadFile1(), $this->buildUploadFile2()], FileServiceMock::$uploadedFiles);
+    }
+
+    /**
+     * @test
+     */
+    public function WithLocales_and_projects_update_Update()
+    {
+        $this->service->update([1], ProjectsStub::$projects[1]["file_paths"], ['ja']);
+        $this->assertEquals(
+            [$this->buildExportFile1ja(), $this->buildExportFile2ja()],
             FileServiceMock::$downloadedFiles
         );
         $this->assertEquals([$this->buildUploadFile1(), $this->buildUploadFile2()], FileServiceMock::$uploadedFiles);
@@ -192,16 +251,10 @@ class TranslationServiceImplTest extends \PHPUnit_Framework_TestCase
     {
         $this->service = new TranslationServiceImpl();
         $fileFactory = new FileFactoryImpl();
-        $fileFactory->setKeepingAllStrings(self::IS_KEEPING_ALL_STRINGS);
-        $fileFactory->setFileFormat(self::FILE_FORMAT, self::FILE_FORMATS);
         $fileFactory->setKernelRootDir(self::KERNEL_ROOT_DIR);
-        $fileFactory->setSourceLocale(self::SOURCE_LOCALE);
         $this->service->setEventDispatcher(new EventDispatcher());
         $this->service->setFileFactory($fileFactory);
-        $this->service->setFileFormat(self::FILE_FORMAT, self::FILE_FORMATS);
-        $this->service->setFilePaths([ self::PROJECT_ID => [__DIR__.'/../../Fixtures/Resources/*']]);
         $this->service->setFileService(new FileServiceMock());
-        $this->service->setRequestedLocales(['fr', 'es']);
-        $this->service->setSourceLocale(self::SOURCE_LOCALE);
+        $this->service->setProjects([1 => ProjectsStub::$projects[1]]);
     }
 }

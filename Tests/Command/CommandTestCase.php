@@ -3,6 +3,7 @@
 namespace OpenClassrooms\Bundle\OneSkyBundle\Tests\Command;
 
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Framework\DependencyInjection\ContainerForTest;
+use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Model\ProjectsStub;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Services\LanguageServiceMock;
 use OpenClassrooms\Bundle\OneSkyBundle\Tests\Doubles\Services\TranslationServiceMock;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,15 +18,7 @@ trait CommandTestCase
      * @var string
      */
     public static $filePaths = 'Tests/Fixtures/Resources/translations';
-    /**
-     * @var integer
-     */
-    public static $projectId = 1;
 
-    /**
-     * @var string[]
-     */
-    public static $locales = ['fr'];
 
     /**
      * @return ContainerInterface
@@ -36,8 +29,7 @@ trait CommandTestCase
 
         return new ContainerForTest(
             [
-                'openclassrooms_onesky.file_paths' => [ 1 => [self::$filePaths]],
-                'openclassrooms_onesky.requestedLocales' => self::$locales,
+                'openclassrooms_onesky.projects' => ProjectsStub::$projects,
                 'kernel.root_dir' => __DIR__.'/../',
             ],
             [

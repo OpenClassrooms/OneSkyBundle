@@ -14,5 +14,5 @@ interface LanguageGateway
      *
      * @throws LanguageException
      */
-    public function findLanguages(array $locales, $projectId);
+    public function findLanguages(array $locales, array $project);
 }

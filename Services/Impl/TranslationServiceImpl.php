@@ -27,7 +27,7 @@ class TranslationServiceImpl implements TranslationService
     /**
      * @var string[]
      */
-    private $filePaths;
+    private $projects;
 
     /**
      * @var FileFactory
@@ -35,55 +35,33 @@ class TranslationServiceImpl implements TranslationService
     private $fileFactory;
 
     /**
-     * @var string
-     */
-    private $fileFormat;
-
-    /**
-     * @var array
-     */
-    private $fileFormats;
-
-    /**
      * @var FileService
      */
     private $fileService;
 
     /**
-     * @var string[]
-     */
-    private $requestedLocales;
-
-    /**
-     * @var string
-     */
-    private $sourceLocale;
-
-    /**
      * {@inheritdoc}
      */
-    public function update($projectId, array $filePaths = [], array $locales = [])
+    public function update(array $projectsIds, array $filePaths = [], array $locales = [])
     {
         $this->eventDispatcher->dispatch(TranslationUpdateEvent::getEventName(), new TranslationUpdateEvent());
 
-        return [$this->pull($projectId, $filePaths, $locales), $this->push($projectId, $filePaths)];
+        return [$this->push($projectsIds, $filePaths), $this->pull($projectsIds, $filePaths, $locales)];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function pull($projectId, array $filePaths, array $locales = [])
+    public function pull(array $projectsIds, array $filePaths, array $locales = [])
     {
         $exportFiles = [];
-        /** @var SplFileInfo $file */
-        foreach ($this->getFilePaths($filePaths, $projectId) as $projectId => &$paths) {
-            foreach ($this->getFiles($paths, $this->getSourceLocales(), $projectId) as $file) {
-                foreach ($this->getRequestedLocales($locales) as $locale) {
-                    $exportFiles[] = $this->fileFactory->createExportFile($file->getRealPath(), $projectId, $locale);
+        foreach ($this->getProjectsIds($projectsIds) as $projectId) {
+            foreach ($this->getFiles($this->getFilePaths($filePaths, $projectId), $this->projects[$projectId]["source_locale"], $projectId) as $file) {
+                foreach ($this->getRequestedLocales($locales, $projectId) as $locale) {
+                    $exportFiles[] = $this->fileFactory->createExportFile($file->getRealPath(), $this->projects[$projectId], $locale);
                 }
             }
         }
-
         $this->eventDispatcher->dispatch(
             TranslationPrePullEvent::getEventName(),
             new TranslationPrePullEvent($exportFiles)
@@ -100,14 +78,17 @@ class TranslationServiceImpl implements TranslationService
     }
 
     /**
-     * @return Finder
+     * @return
      */
-    private function getFiles(array $paths, array $locales, $projectId)
+    private function getFiles(array $paths, string $locale, $projectId)
     {
-        return Finder::create()
-            ->files()
-            ->in($paths)
-            ->name('*.{'.implode(',', $locales).'}.'.isset($this->fileFormats[$projectId])?$this->fileFormats[$projectId]:$this->fileFormat);
+        if(empty($paths))
+            return array();
+        else
+            return Finder::create()
+                ->files()
+                ->in($paths)
+                ->name('*.'.$locale.'.'.$this->projects[$projectId]["file_format"]);
     }
 
     /**
@@ -115,47 +96,61 @@ class TranslationServiceImpl implements TranslationService
      */
     private function getFilePaths(array $filePaths, $projectId)
     {
-        if(empty($filePaths)) {
-            if($projectId && isset($this->filePaths[$projectId]))
-                return array($projectId => $this->filePaths[$projectId]);
-            else
-                return $this->filePaths;
+        if(empty($filePaths))
+            return $this->projects[$projectId]["file_paths"];
+        else {
+            foreach ($filePaths as $key => &$filePath) {
+                $pathFound = false;
+                foreach ($this->projects[$projectId]["file_paths"] as $projectFilePath)
+                    if (strpos($filePath, $projectFilePath) === 0)
+                        $pathFound = true;
+                if(!$pathFound)
+                    unset($filePaths[$key]);
+            }
+            return $filePaths;
         }
-        elseif ($projectId) {
-            return array($projectId => $filePaths);
-        }
+    }
+    /**
+     * @return string[]
+     */
+    private function getProjectsIds($projectsIds)
+    {
+        if(empty($projectsIds))
+            return array_keys($this->projects);
         else
-            return $this->filePaths;
+            return $projectsIds;
     }
 
     /**
      * @return string[]
      */
-    private function getSourceLocales(array $locales = [])
+    private function getSourceLocales(array $locales = [], $projectId)
     {
-        return empty($locales) ? [$this->sourceLocale] : $locales;
+        if(empty($locales))
+            return [$this->projects[$projectId]["source_locale"]];
+        else
+            return $locales;
     }
 
     /**
      * @return string[]
      */
-    private function getRequestedLocales(array $locales)
+    private function getRequestedLocales(array $locales, $projectId)
     {
-        return empty($locales) ? $this->requestedLocales : $locales;
+        return empty($locales) ? $this->projects[$projectId]["locales"] : $locales;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function push($projectId, array $filePaths, array $locales = [])
+    public function push(array $projectsIds, array $filePaths, array $locales = [])
     {
-
         $uploadFiles = [];
         /* @var SplFileInfo $file */
-        foreach ($this->getSourceLocales($locales) as $locale) {
-            foreach ($this->getFilePaths($filePaths, $projectId) as $projectId => &$paths) {
-                foreach ($this->getFiles($paths, [$locale], $projectId) as $file) {
-                    $uploadFiles[] = $this->fileFactory->createUploadFile($file->getRealPath(), $projectId, $locale);
+        foreach ($this->getProjectsIds($projectsIds) as $projectId) {
+            foreach ($this->getSourceLocales($locales, $projectId) as $locale) {
+                foreach ($this->getFiles($this->getFilePaths($filePaths, $projectId), $locale, $projectId) as $file) {
+                    $uploadFiles[] = $this->fileFactory->createUploadFile($file->getRealPath(), $this->projects[$projectId], $locale);
                 }
             }
         }
@@ -185,29 +180,18 @@ class TranslationServiceImpl implements TranslationService
         $this->fileFactory = $fileFactory;
     }
 
-    public function setFileFormat($fileFormat, $fileFormats)
-    {
-        $this->fileFormat = $fileFormat;
-        $this->fileFormats = $fileFormats;
-    }
-
-    public function setFilePaths(array $filePaths)
-    {
-        $this->filePaths = $filePaths;
-    }
 
     public function setFileService(FileService $fileService)
     {
         $this->fileService = $fileService;
     }
 
-    public function setRequestedLocales(array $requestedLocales)
+    public function setProjects($projects)
     {
-        $this->requestedLocales = $requestedLocales;
+        foreach ($projects as $projectId => &$project)
+            $project["id"] = $projectId;
+        $this->projects = $projects;
     }
 
-    public function setSourceLocale($sourceLocale)
-    {
-        $this->sourceLocale = $sourceLocale;
-    }
 }
+

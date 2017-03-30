@@ -19,7 +19,9 @@ class UpdateCommand extends Command
     {
         $this->setName($this->getCommandName())
             ->setDescription($this->getCommandDescription())
-            ->addOption('projectId', null, InputOption::VALUE_OPTIONAL, 'Project Id');
+            ->addOption('projectId', null,  InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Requested projectsIds', [])
+            ->addOption('filePath', 'dir', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'File paths', [])
+            ->addOption('locale', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Source locale', []);
     }
 
     /**
@@ -40,6 +42,10 @@ class UpdateCommand extends Command
         $output->writeln("<info>Updating translations</info>\n");
         $this->handlePullDisplay($output);
         $this->handlePushDisplay($output);
-        $this->getContainer()->get('openclassrooms.onesky.services.translation_service')->update($input->getOption('projectId'));
+        $this->getContainer()->get('openclassrooms.onesky.services.translation_service')->update(
+            $input->getOption('projectId'),
+            $input->getOption('filePath'),
+            $input->getOption('locale')
+        );
     }
 }

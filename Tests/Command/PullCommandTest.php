@@ -33,8 +33,8 @@ class PullCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function with_locales_execute()
     {
-        $this->commandTester->execute(['command' => PullCommand::COMMAND_NAME, '--locale' => ['es']]);
-        $this->assertEquals(['es'], TranslationServiceMock::$locales);
+        $this->commandTester->execute(['command' => PullCommand::COMMAND_NAME, '--locale' => ['ja']]);
+        $this->assertEquals(['ja'], TranslationServiceMock::$locales);
     }
 
     /**
@@ -51,7 +51,7 @@ class PullCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function with_filePath_execute()
     {
-        $this->commandTester->execute(['command' => PullCommand::COMMAND_NAME, '--projectId' => [self::$projectId], '--filePath' => [self::$filePaths]]);
+        $this->commandTester->execute(['command' => PullCommand::COMMAND_NAME, '--projectId' => [1], '--filePath' => [self::$filePaths]]);
         $this->assertEquals([self::$filePaths], TranslationServiceMock::$pulledFilePaths);
     }
 

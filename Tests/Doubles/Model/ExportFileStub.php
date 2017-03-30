@@ -9,7 +9,14 @@ use OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\ExportFileImpl;
  */
 abstract class ExportFileStub extends ExportFileImpl
 {
-    const PROJECT_ID = 1;
-
+    const PROJECT =
+    [
+        "id" => 1,
+        "file_format" => "yml",
+        "source_locale" => "en",
+        "locales" => ["en","fr","ja"],
+        "keep_all_strings" => 0,
+        "file_paths" => [ "__DIR__.'/../'Tests/Fixtures/Resources/translations/"]
+    ];
     const PROJECT_DIRECTORY = __DIR__.'/../../../';
 }

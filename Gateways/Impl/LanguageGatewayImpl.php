@@ -30,14 +30,14 @@ class LanguageGatewayImpl implements LanguageGateway
      * @throws LanguageException
      * @throws LanguageNotFoundException
      */
-    public function findLanguages(array $locales, $projectId)
+    public function findLanguages(array $locales, array $project)
     {
-        $jsonResponse = $this->client->projects(self::LANGUAGES_METHOD, ['project_id' => $projectId]);
+        $jsonResponse = $this->client->projects(self::LANGUAGES_METHOD, ['project_id' => $project["id"]]);
         $response = json_decode($jsonResponse, true);
 
         $this->checkResponse($response, $jsonResponse);
 
-        $languages = $this->createLanguages($response, $projectId);
+        $languages = $this->createLanguages($response, $project["id"]);
         $requestedLanguages = [];
         foreach ($locales as $locale) {
             if (isset($languages[$locale])) {
