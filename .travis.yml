@@ -1,12 +1,17 @@
 language: php
 
+env:
+  - DEPS_VERSION="--prefer-lowest"
+  - DEPS_VERSION="--prefer-stable"
+
 php:
   - "5.6"
   - "7.0"
+  - "7.1"
 
 before_script:
   - composer self-update
-  - composer install --no-scripts --no-interaction
+  - composer upgrade --prefer-dist ${DEPS_VERSION}
   - composer dump-autoload -o
 
 after_script:
