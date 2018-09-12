@@ -8,8 +8,8 @@
                 <argument type="string">%openclassrooms_onesky.api_secret%</argument>
             </call>
         </service>
-        <service id="openclassrooms.onesky.event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher"/>
-        <service id="openclassrooms.onesky.gateways.file" class="OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl\FileGatewayImpl">
+        <service id="openclassrooms.onesky.event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher" public="true"/>
+        <service id="openclassrooms.onesky.gateways.file" class="OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl\FileGatewayImpl" public="true">
             <call method="setClient">
                 <argument type="service" id="openclassrooms.onesky.client"/>
             </call>
@@ -17,7 +17,7 @@
                 <argument type="service" id="openclassrooms.onesky.event_dispatcher"/>
             </call>
         </service>
-        <service id="openclassrooms.onesky.gateways.language" class="OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl\LanguageGatewayImpl">
+        <service id="openclassrooms.onesky.gateways.language" class="OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl\LanguageGatewayImpl" public="true">
             <call method="setClient">
                 <argument type="service" id="openclassrooms.onesky.client"/>
             </call>
@@ -28,7 +28,7 @@
                 <argument type="string">%openclassrooms_onesky.project_id%</argument>
             </call>
         </service>
-        <service id="openclassrooms.onesky.model.file_factory" class="OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\FileFactoryImpl">
+        <service id="openclassrooms.onesky.model.file_factory" class="OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\FileFactoryImpl" public="true">
             <call method="setKeepingAllStrings">
                 <argument type="string">%openclassrooms_onesky.keep_all_strings%</argument>
             </call>
@@ -45,13 +45,13 @@
                 <argument type="string">%openclassrooms_onesky.source_locale%</argument>
             </call>
         </service>
-        <service id="openclassrooms.onesky.model.language_factory" class="OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\LanguageFactoryImpl"/>
-        <service id="openclassrooms.onesky.services.file_service" class="OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\FileServiceImpl">
+        <service id="openclassrooms.onesky.model.language_factory" class="OpenClassrooms\Bundle\OneSkyBundle\Model\Impl\LanguageFactoryImpl" public="true"/>
+        <service id="openclassrooms.onesky.services.file_service" class="OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\FileServiceImpl" public="true">
             <call method="setFileGateway">
                 <argument type="service" id="openclassrooms.onesky.gateways.file"/>
             </call>
         </service>
-        <service id="openclassrooms.onesky.services.language_service" class="OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\LanguageServiceImpl">
+        <service id="openclassrooms.onesky.services.language_service" class="OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\LanguageServiceImpl" public="true">
             <call method="setLanguageGateway">
                 <argument type="service" id="openclassrooms.onesky.gateways.language"/>
             </call>
@@ -59,7 +59,7 @@
                 <argument>%openclassrooms_onesky.locales%</argument>
             </call>
         </service>
-        <service id="openclassrooms.onesky.services.translation_service" class="OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\TranslationServiceImpl">
+        <service id="openclassrooms.onesky.services.translation_service" class="OpenClassrooms\Bundle\OneSkyBundle\Services\Impl\TranslationServiceImpl" public="true">
             <call method="setEventDispatcher">
                 <argument type="service" id="openclassrooms.onesky.event_dispatcher"/>
             </call>
@@ -81,6 +81,18 @@
             <call method="setSourceLocale">
                 <argument type="string">%openclassrooms_onesky.source_locale%</argument>
             </call>
+        </service>
+        <service id="OpenClassrooms\Bundle\OneSkyBundle\Command\CheckTranslationProgressCommand" public="true">
+            <tag name="console.command" />
+        </service>
+        <service id="OpenClassrooms\Bundle\OneSkyBundle\Command\PullCommand" public="true">
+            <tag name="console.command" />
+        </service>
+        <service id="OpenClassrooms\Bundle\OneSkyBundle\Command\PushCommand" public="true">
+            <tag name="console.command" />
+        </service>
+        <service id="OpenClassrooms\Bundle\OneSkyBundle\Command\UpdateCommand" public="true">
+            <tag name="console.command" />
         </service>
     </services>
 </container>
