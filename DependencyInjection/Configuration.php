@@ -23,8 +23,8 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('project_id')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('file_format')->cannotBeEmpty()->defaultValue('xliff')->end()
             ->scalarNode('source_locale')->cannotBeEmpty()->defaultValue('en')->end()
-            ->arrayNode('locales')->requiresAtLeastOneElement()->cannotBeEmpty()->prototype('scalar')->end()->end()
-            ->arrayNode('file_paths')->requiresAtLeastOneElement()->cannotBeEmpty()->prototype('scalar')->end()->end()
+            ->arrayNode('locales')->requiresAtLeastOneElement()->prototype('scalar')->end()->end()
+            ->arrayNode('file_paths')->requiresAtLeastOneElement()->prototype('scalar')->end()->end()
             ->scalarNode('keep_all_strings')->cannotBeEmpty()->defaultValue(true)->end()
             ->end();
 
